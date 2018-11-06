@@ -26,7 +26,7 @@ public class BaseRunner {
         try {
                 BrowsersFactory.valueOf(System.getProperty("browser"));
         } catch (NullPointerException | IllegalArgumentException e) {
-            browserName = "firefox";
+            browserName = "chrome";
             System.setProperty("browser", browserName);
         }
         return BrowsersFactory.valueOf(browserName).create();
