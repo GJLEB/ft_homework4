@@ -1,35 +1,27 @@
 import org.junit.After;
 import org.junit.Before;
-import org.openqa.selenium.WebDriver;
 
-import java.util.concurrent.TimeUnit;
 
 public class BaseRunner {
-    WebDriver driver;
-    public String browserName = System.getProperty("browser");
-    String baseUrl;
+    private static ThreadLocal<Application> tlApp = new ThreadLocal<>();
+    Application app;
+
 
     @Before
-    public void setUp() {
-        driver = getDriver();
-        driver.manage().window().maximize();
-        baseUrl = "https://moscow-job.tinkoff.ru/";
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+    public void start() {
+        if (tlApp.get() != null) {
+            app = tlApp.get();
+            return;
+        }
+        app = new Application();
+        tlApp.set(app);
     }
 
     @After
     public void tearDown() {
-        driver.quit();
+        app.quit();
     }
 
-    private WebDriver getDriver() {
-        try {
-                BrowsersFactory.valueOf(System.getProperty("browser"));
-        } catch (NullPointerException | IllegalArgumentException e) {
-            browserName = "chrome";
-            System.setProperty("browser", browserName);
-        }
-        return BrowsersFactory.valueOf(browserName).create();
-    }
+
 
 }
